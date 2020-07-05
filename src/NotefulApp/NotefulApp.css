@@ -1,0 +1,45 @@
+.main-route, .folder-route, .note-route {
+    display: flex;
+}
+
+.folder-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 25%;
+    border: 1px solid black;
+    padding: 10px;
+}
+
+.note-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 75%;
+    border: 1px solid black;
+    padding: 10px;
+}
+
+.folder, .add-folder {
+    border: 1px solid black;
+    height: 50px;
+    width: 100%;
+    align-self: center;
+}
+
+.note {
+    border: 1px solid black;
+    height: 50px;
+    width: 70%;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+}
+
+.notes {
+    display: flex;
+    flex-direction: column;
+}
+
+

@@ -1,0 +1,10 @@
+.note-title-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.modify-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
