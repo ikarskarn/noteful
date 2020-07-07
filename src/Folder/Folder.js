@@ -2,39 +2,39 @@ import React from 'react';
 import './Folder.css';
 import FolderList from '../FolderList/FolderList';
 import NoteList from '../NoteList/NoteList';
-import STORE from '../STORE';
+//import STORE from '../STORE';
 import { Link } from 'react-router-dom';
+import NotefulContext from '../NotefulContext';
 
 class Folder extends React.Component {
+    static contextType = NotefulContext;
     isSelected = (selected) => {
         let str = '';
         if(selected) {
             str = 'highlight';
-        } else {
-            console.log('it is false');
         }
         return str;
     }
     render() {
-        const folders = STORE.folders
+        const folders = this.context.folders
         .map((folder) => {
             return (
                 <Link
-                    className={`folder ${this.isSelected(this.props.isSelected(folder.id))}`} 
+                    className={`folder ${this.isSelected(this.context.isSelected(folder.id))}`} 
                     key={folder.id}
                     id={folder.id}
                     value={folder.id}
-                    onClick={(e) => this.props.onHandleFolderUpdate(e.target.id)}
+                    onClick={(e) => this.context.updateFolderState(e.target.id)}
                     to={`/folder`}
                 >
-                {folder.name}
+                    {folder.name}
                 </Link>
             )
         });
-        const notes = STORE.notes
+        const notes = this.context.notes
             .filter(note => {
                 return(
-                    note.folderId === this.props.folderid
+                    note.folderId === this.context.folderid
                 );
             })
             .map((note) => {
@@ -44,12 +44,12 @@ class Folder extends React.Component {
                     className='note'
                     folderid={note.folderId}
                     id={note.id}
-                    onClick={(e) => this.props.onHandleNoteUpdate(e.target.id)}
+                    onClick={(e) => this.context.updateNoteState(e.target.id)}
                     modified={note.modified}
                     content={note.content}
                     to={'/note'}
                 >
-                {note.name}
+                    {note.name}
                 </Link>
             )
         }) 
@@ -59,13 +59,13 @@ class Folder extends React.Component {
                     <FolderList 
                         folders={folders}
                     />
-                    <Link className="add-folder">Add Folder</Link>
+                    <p className="add-folder">Add Folder</p>
                 </div>
                 <div className="note-list">
                     <NoteList 
                         notes={notes}
                     />
-                    <Link className="add-note">Add Note</Link>
+                    <p className="add-note">Add Note</p>
                 </div>
             </div>
         );

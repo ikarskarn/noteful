@@ -4,11 +4,9 @@ import './NoteList.css';
 class NoteList extends React.Component {
     render() {
         return (
-            <>
-                <div className='notes'>
-                    {this.props.notes}
-                </div>
-            </>
+            <div className='notes'>
+                {this.props.notes}
+            </div>
         );
     }
 }

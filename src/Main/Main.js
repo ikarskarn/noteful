@@ -2,36 +2,39 @@ import React from 'react';
 import './Main.css';
 import FolderList from '../FolderList/FolderList';
 import NoteList from '../NoteList/NoteList';
-import STORE from '../STORE';
+//import STORE from '../STORE';
 import { Link } from 'react-router-dom';
+import NotefulContext from '../NotefulContext';
+
 class Main extends React.Component {
+    static contextType = NotefulContext;
     render() {
-        const folders = STORE.folders.map((folder) => {
+        const folders = this.context.folders.map((folder) => {
             return (
                 <Link
                     className='folder' 
                     key={folder.id}
                     id={folder.id}
-                    onClick={(e) => this.props.onHandleFolderUpdate(e.target.id)}
+                    onClick={(e) => this.context.updateFolderState(e.target.id)}
                     to={`/folder`}
                 >
-                {folder.name}
+                    {folder.name}
                 </Link>
             )
         });
-        const notes = STORE.notes.map((note, idx) => {
+        const notes = this.context.notes.map((note) => {
             return(
                 <Link
                     key={note.id}
                     className='note'
                     folderid={note.folderId}
                     id={note.id}
-                    onClick={(e) => this.props.onHandleNoteUpdate(e.target.id)}
+                    onClick={(e) => this.context.updateNoteState(e.target.id)}
                     modified={note.modified}
                     content={note.content}
                     to={'/note'}
                 >
-                {note.name}
+                    {note.name}
                 </Link>
             )
         }) 
@@ -41,13 +44,13 @@ class Main extends React.Component {
                     <FolderList 
                         folders={folders}
                     />
-                    <Link className="add-folder">Add Folder</Link>
+                    <p className="add-folder">Add Folder</p>
                 </div>
                 <div className="note-list">
                     <NoteList 
                         notes={notes}
                     />
-                    <Link className="add-note">Add Note</Link>
+                    <p className="add-note">Add Note</p>
                 </div>
             </div>
         );
