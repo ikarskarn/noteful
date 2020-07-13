@@ -1,0 +1,21 @@
+.folder-list {
+    padding: 10px;
+    align-items: center;
+}
+
+.nav-list {
+    margin: 10px;
+    text-align: center;
+}
+
+.folder {
+    text-align: center;
+    padding: 5px;
+    margin: 3px;
+    border-radius: 6px;
+}
+
+.folder__button {
+    height: 50px;
+    width: 100px;
+}

@@ -1,0 +1,27 @@
+.note-list {
+    padding: 10px;
+    align-items: center;
+}
+
+.nav-list {
+    margin: 10px;
+    text-align: center;
+}
+
+.notes {
+    text-align: center;
+    margin: 10px;
+    width: 100%;
+}
+
+.note {
+    padding: 5px;
+    margin: 3px;
+    border-radius: 6px;
+    width: 75%;
+}
+
+.note__button {
+    height: 50px;
+    width: 100px;
+}

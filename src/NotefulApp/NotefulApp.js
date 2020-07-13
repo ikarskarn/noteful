@@ -6,6 +6,9 @@ import Main from '../Main/Main';
 import Folder from '../Folder/Folder';
 import Note from '../Note/Note';
 import Header from '../Header.js';
+import NewFolder from '../NewFolder/NewFolder';
+import NewNote from '../NewNote/NewNote';
+import PropTypes from 'prop-types';
 
 class NotefulApp extends React.Component {
     state = {
@@ -13,15 +16,29 @@ class NotefulApp extends React.Component {
         noteid: '',
         folders: [],
         notes: [],
+        renderFolderForm: false,
+        renderNoteForm: false,
         updateFolderState: (id) => {
+            console.log("Update folder ID ran: ", id)
             this.setState({
                 folderid: id,
             });
         },
         updateNoteState: (id) => {
+            console.log("update note ID ran: ", id)
             this.setState({
                 noteid: id,
             });
+        },
+        updateNewNoteState: (value) => {
+            this.setState({
+                renderNoteForm: value,
+            })
+        },
+        updateNewFolderState: (value) => {
+            this.setState({
+                renderFolderForm: value,
+            })
         },
         isSelected: (id) => {
             if(id === this.state.folderid && this.state.folderid !== '') {
@@ -37,7 +54,28 @@ class NotefulApp extends React.Component {
             this.setState({
                 notes: newNotes,
             })
-        }
+        },
+        handleRenderForm: () => {
+            if(this.state.renderFolderForm) 
+                return <NewFolder />
+            else if(this.state.renderNoteForm)
+                return <NewNote />
+        },
+        addNote: (note) => {
+            this.setState({
+                notes: [...this.state.notes, note],
+                renderNoteForm: false,
+            })
+            this.state.handleRenderForm();
+        },
+        addFolder: (folder) => {
+            console.log("add Folder ID: ", folder.id);
+            this.setState({
+                folders: [...this.state.folders, folder],
+                renderFolderForm: false,
+                folderId: folder.id,
+            })
+        },
     };
     componentDidMount() {
         fetch('http://localhost:9090/folders')
@@ -67,7 +105,7 @@ class NotefulApp extends React.Component {
         })
         .then(notes => {
             this.setState({ notes })
-            console.log(notes);
+            console.log('Noteful Notes: ', notes);
         })
         .catch(error => {
             console.error(error);
@@ -77,7 +115,7 @@ class NotefulApp extends React.Component {
         return (
             <NotefulContext.Provider value={this.state}>
                 <div className="noteful-app">
-                    <Header />
+                    <Header />            
                     <main className='main-app'>
                         <Route exact path='/' component={Main}/>
                         <Route path='/folder' component={Folder}/>
@@ -88,5 +126,16 @@ class NotefulApp extends React.Component {
         );
     }
 }
+
+NotefulApp.propTypes = {
+    state: PropTypes.arrayOf(PropTypes.shape({
+        folderid: PropTypes.string,
+        noteid: PropTypes.string,
+        folders: PropTypes.arrayOf(PropTypes.object),
+        notes: PropTypes.arrayOf(PropTypes.object),
+        renderFolderForm: PropTypes.bool,
+        renderNoteForm: PropTypes.bool,
+    }))
+};
 
 export default NotefulApp;

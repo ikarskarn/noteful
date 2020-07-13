@@ -2,9 +2,9 @@ import React from 'react';
 import './Note.css';
 import FolderList from '../FolderList/FolderList';
 import NoteList from '../NoteList/NoteList';
-//import STORE from '../STORE.js';
 import { Link } from 'react-router-dom';
 import NotefulContext from '../NotefulContext';
+import ListError from '../ListError';
 
 class Note extends React.Component {
     static contextType = NotefulContext;
@@ -35,10 +35,9 @@ class Note extends React.Component {
         .filter(folder => folder.id === this.context.folderid)
         .map((folder) => {
             return (
-                <div className='folder'>
+                <div className='note-folder' key={folder.id}>
                     <Link
                         className={`go-back`} 
-                        key={folder.id}
                         id={folder.id}
                         value={folder.id}
                         onClick={(e) => this.context.updateFolderState(e.target.id)}
@@ -47,11 +46,12 @@ class Note extends React.Component {
                         Go Back
                     </Link>
                     <h2>
-                        {folder.name}
+                        Folder: {folder.name}
                     </h2>
                 </div>
             )
         });
+            
         const notes = this.context.notes
         .filter(note => note.id === this.context.noteid)
         .map((note) => {
@@ -81,16 +81,14 @@ class Note extends React.Component {
         }) 
         return (
             <div className="note-route">
-                <div className="folder-list">
-                    <FolderList 
-                        folders={folders}
-                    />
-                </div>
-                <div className="note-list">
-                    <NoteList 
-                        notes={notes}
-                    />
-                </div>
+                <ListError>
+                    <div className="folder-list">
+                        <FolderList folders={folders} />
+                    </div>
+                    <div className="note-list">
+                        <NoteList notes={notes} />
+                    </div>
+                </ListError>
             </div>
         );
     }

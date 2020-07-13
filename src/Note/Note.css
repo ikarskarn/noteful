@@ -8,3 +8,21 @@
     flex-direction: row;
     justify-content: space-between;
 }
+
+.note-folder {
+    display: flex;
+    border: none;
+    flex-direction: column;
+    height: auto;
+}
+
+.go-back {
+    margin: auto 5px;
+    border: 1px solid black;
+    height: 50px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    font-size: 18px;
+}

@@ -2,14 +2,15 @@ import React from 'react';
 import './Main.css';
 import FolderList from '../FolderList/FolderList';
 import NoteList from '../NoteList/NoteList';
-//import STORE from '../STORE';
 import { Link } from 'react-router-dom';
 import NotefulContext from '../NotefulContext';
+import ListError from '../ListError';
 
 class Main extends React.Component {
     static contextType = NotefulContext;
     render() {
-        const folders = this.context.folders.map((folder) => {
+        const folders = this.context.folders
+        .map((folder) => {
             return (
                 <Link
                     className='folder' 
@@ -22,14 +23,16 @@ class Main extends React.Component {
                 </Link>
             )
         });
-        const notes = this.context.notes.map((note) => {
+        const notes = this.context.notes
+        .map((note) => {
+            console.log("NOTE FOLDER ID: ", note.folderId);
             return(
                 <Link
                     key={note.id}
                     className='note'
                     folderid={note.folderId}
                     id={note.id}
-                    onClick={(e) => this.context.updateNoteState(e.target.id)}
+                    onClick={(e) => (this.context.updateFolderState(note.folderId), this.context.updateNoteState(e.target.id))}
                     modified={note.modified}
                     content={note.content}
                     to={'/note'}
@@ -40,18 +43,34 @@ class Main extends React.Component {
         }) 
         return (
             <div className="main-route">
+                <ListError>
                 <div className="folder-list">
-                    <FolderList 
+                    <FolderList
                         folders={folders}
                     />
-                    <p className="add-folder">Add Folder</p>
+                    <button
+                        type="button"
+                        className="folder__button"
+                        onClick={(e) => this.context.updateNewFolderState(true)}
+                    >
+                        New Folder
+                    </button>
                 </div>
                 <div className="note-list">
-                    <NoteList 
-                        notes={notes}
-                    />
-                    <p className="add-note">Add Note</p>
+                    { this.context.handleRenderForm() || 
+                    <>
+                        <NoteList notes={notes} />
+                        <button
+                            type="button"
+                            className="note__button"
+                            onClick={(e) => this.context.updateNewNoteState(true)}
+                        >
+                            New Note
+                        </button>
+                    </> }
                 </div>
+
+                </ListError>
             </div>
         );
     }
