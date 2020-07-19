@@ -6,8 +6,8 @@ import Main from '../Main/Main';
 import Folder from '../Folder/Folder';
 import Note from '../Note/Note';
 import Header from '../Header.js';
-import NewFolder from '../NewFolder/NewFolder';
-import NewNote from '../NewNote/NewNote';
+import AddFolder from '../AddFolder/AddFolder';
+import AddNote from '../AddNote/AddNote';
 import PropTypes from 'prop-types';
 
 class NotefulApp extends React.Component {
@@ -57,9 +57,9 @@ class NotefulApp extends React.Component {
         },
         handleRenderForm: () => {
             if(this.state.renderFolderForm) 
-                return <NewFolder />
+                return <AddFolder />
             else if(this.state.renderNoteForm)
-                return <NewNote />
+                return <AddNote />
         },
         addNote: (note) => {
             this.setState({
@@ -105,7 +105,6 @@ class NotefulApp extends React.Component {
         })
         .then(notes => {
             this.setState({ notes })
-            console.log('Noteful Notes: ', notes);
         })
         .catch(error => {
             console.error(error);

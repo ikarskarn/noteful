@@ -25,14 +25,16 @@ class Main extends React.Component {
         });
         const notes = this.context.notes
         .map((note) => {
-            console.log("NOTE FOLDER ID: ", note.folderId);
             return(
                 <Link
                     key={note.id}
                     className='note'
                     folderid={note.folderId}
                     id={note.id}
-                    onClick={(e) => (this.context.updateFolderState(note.folderId), this.context.updateNoteState(e.target.id))}
+                    onClick={(e) => {
+                        this.context.updateFolderState(note.folderId);
+                        this.context.updateNoteState(e.target.id)
+                    }}
                     modified={note.modified}
                     content={note.content}
                     to={'/note'}

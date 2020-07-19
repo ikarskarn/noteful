@@ -1,11 +1,15 @@
 import React from 'react';
-import './NewFolder.css';
+import './AddFolder.css';
 import NotefulContext from '../NotefulContext';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import ValidationError from '../ValidationError';
 
-class NewFolder extends React.Component {
+class AddFolder extends React.Component {
+    constructor(props) {
+        super(props);
+        this.nameInput = React.createRef();
+    }
     static contextType = NotefulContext;
     state = {
         id: {
@@ -31,7 +35,7 @@ class NewFolder extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault();
         const id = this.state.id.value;
-        const name = this.state.name.value;
+        const name = this.nameInput.current.value;
         const folder = { id, name};
         const url='http://localhost:9090/folders'
         const options = {
@@ -69,7 +73,7 @@ class NewFolder extends React.Component {
     }
     validateName() {
         const name = this.state.name.value.trim();
-        if(name.length == 0) {
+        if(name.length === 0) {
             return 'Name is required';
         } else if (name.length < 3 || name.length > 15) {
             return 'Name should be between 3 and 15 characters';
@@ -86,7 +90,7 @@ class NewFolder extends React.Component {
                         className="new-folder__control"
                         name="name" 
                         id="name"
-                        value={this.state.name.value}
+                        ref={this.nameInput}
                         onChange={e=>this.updateNameState(e.target.value)}
                     />
                     {this.state.name.touched && (
@@ -104,6 +108,7 @@ class NewFolder extends React.Component {
                     <button 
                         type="submit"
                         className="save__button"
+                        disabled={this.validateName()}
                         onClick={(e) => this.updateIdState(this.generateId())}
                     >
                         Save Folder
@@ -114,11 +119,11 @@ class NewFolder extends React.Component {
     }
 }
 
-NewFolder.propTypes = {
+AddFolder.propTypes = {
     state: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string,
         name: PropTypes.string
     }))
 };
 
-export default withRouter(NewFolder);
+export default withRouter(AddFolder);

@@ -24,7 +24,7 @@ class Note extends React.Component {
             return response.json()
         })
         .then(data => {
-            callback(noteId)
+            this.context.deleteNote(noteId)
         })
         .catch(error => {
             console.error(error)
@@ -61,7 +61,6 @@ class Note extends React.Component {
                         className='note'
                         folderid={note.folderId}
                         id={note.id}
-                        className='note-title-group'
                     >
                         <h2>{note.name}</h2>
                         <div className='modify-group'>

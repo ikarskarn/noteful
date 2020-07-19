@@ -1,11 +1,17 @@
 import React from 'react';
-import './NewNote.css';
+import './AddNote.css';
 import NotefulContext from '../NotefulContext';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import ValidationError from '../ValidationError';
 
-class NewNote extends React.Component {
+class AddNote extends React.Component {
+    constructor(props) {
+        super(props);
+        this.nameInput = React.createRef();
+        this.contentInput = React.createRef();
+        this.folderInput = React.createRef();
+    }
     static contextType = NotefulContext;
     state={
         id: {
@@ -20,13 +26,20 @@ class NewNote extends React.Component {
         },
         folderId: {
             value: '',
+            touched: false,
         },
         content: {
             value: '',
             touched: false,
         },
+        folderName: {
+            value: '',
+        },
     }
     generateState() {
+        console.log("Name: ", this.state.name.value);
+        console.log("Content: ", this.state.content.value);
+        console.log("Folder: ", this.state.folderId.value);
         const id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         this.updateIdState(id);
         const modified = new Date();
@@ -35,13 +48,13 @@ class NewNote extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault();
         this.generateState();
-        const note = {
-            id: this.state.id.value,
-            name: this.state.name.value,
-            modified: this.state.modified.value,
-            folderId: this.state.folderId.value,
-            content: this.state.content.value,
-        };
+        const id = this.state.id.value;
+        const name = this.nameInput.current.value;
+        const modified = this.state.modified.value;
+        const folderId = this.state.folderId.value;
+        const content = this.contentInput.current.value;
+
+        const note = { id, name, modified, folderId, content };
         const url='http://localhost:9090/notes'
         const options = {
             method: 'POST',
@@ -59,16 +72,17 @@ class NewNote extends React.Component {
         })
         .then(data=> {
             this.setState({
-                id: '',
-                name: '',
-                modified: '',
-                folderId: '',
-                content: ''
+                id: { value: '' },
+                name: { value: '', touched: false }, 
+                modified: { value: '' },
+                folderId: { value: '', touched: false },
+                content: { value: '', touched: false },
             });
             this.context.addNote(data);
+            this.props.history.push('/');
         })
         .catch(error => {
-            console.log(error);
+            console.error(error);
         })
     }
     //#region Update States
@@ -87,13 +101,15 @@ class NewNote extends React.Component {
             modified: { value: modified },
         })
     }
-    updateFolderIdState(e) {
+    updateFolderState(e) {
         const index = e.target.selectedIndex;
         const optionElement = e.target.childNodes[index];
         const folderid =  optionElement.getAttribute('folderid');
-        
+        const folderName = optionElement.getAttribute('value');
+                 
         this.setState({
-            folderId: { value: folderid },
+            folderId: { value: folderid, touched: true },
+            folderName: { value: folderName },
         })
     }
     updateContentState(content) {
@@ -106,37 +122,44 @@ class NewNote extends React.Component {
     handleFormDisplay(value) {
         this.context.updateNewNoteState(value);
         this.context.handleRenderForm();
-        this.props.history.push('/');
+        //this.props.history.push('/');
     }
     validateName() {
         const name = this.state.name.value.trim();
-        if(name.length == 0) {
+        if(name.length === 0) {
             return 'Name is required';
-        } else if (name.length < 3 || name.length > 15) {
-            return 'Name should be between 3 and 15 characters';
+        } else if (name.length < 3 || name.length > 20) {
+            return 'Name should be between 3 and 20 characters';
         }
     }
     validateContent() {
         const content = this.state.content.value.trim();
-        if(content.length == 0) {
+        if(content.length === 0) {
             return 'Content is required';
         } else if (content.length < 5) {
             return 'Content should be more than 5 characters';
         }
     }
+    validateFolder() {
+        const folderName = this.state.folderName.value.trim();
+        if(folderName.length === 0) {
+            return 'Folder is required';
+        }
+    }
+    
     render() {
-        const folderOptions = this.context.folders.map(folder => {
-            //console.log('Folder ID: ', folder.id);
+        const folderOptions = this.context.folders.map((folder, i) => {
             return(
                 <option 
                     key={folder.id}
                     folderid={folder.id}
+                    value={folder.name}
                 >
                     {folder.name}
                 </option>
             )
         });
-                    
+
         return(
             <form className="new-note" onSubmit={(e)=>this.handleSubmit(e)}>
                 <h2>Add New Note</h2>
@@ -147,21 +170,21 @@ class NewNote extends React.Component {
                         className="new-note__control note-name"
                         name="name" 
                         id="name"
-                        value={this.state.name.value || ''}
+                        ref={this.nameInput}
                         onChange={e=>this.updateNameState(e.target.value)}
                     />
                     {this.state.name.touched && (
                         <ValidationError message={this.validateName()}/>
                     )}
                 </div>
-                <div className="form-group note-content-container">
+                <div className="form-group">
                     <label htmlFor="content">Note Text</label>
                     <textarea 
                         type="text" 
                         className="new-note__control note-content"
                         name="content" 
                         id="content"
-                        value={this.state.content.value || ''}
+                        ref={this.contentInput}
                         onChange={e=>this.updateContentState(e.target.value)}
                     />
                     {this.state.name.touched && (
@@ -173,12 +196,17 @@ class NewNote extends React.Component {
                     <select 
                         className="new-note__control note-folder"
                         name="folderId" 
-                        id={this.state.folderId.id || ''}
-                        value={this.state.folderId.name || ''}
-                        onChange={e=>this.updateFolderIdState(e)}
+                        id="folderId"
+                        ref={this.folderInput}
+                        defaultValue={'default'}
+                        onChange={e=>this.updateFolderState(e)}
                     >
+                        <option value="default" disabled>Choose a Folder</option>
                         {folderOptions}
                     </select>
+                    {this.state.folderId.touched && (
+                        <ValidationError message={this.validateFolder()}/>
+                    )}
                 </div>
                 <div className="button-group">
                     <button 
@@ -191,6 +219,8 @@ class NewNote extends React.Component {
                     <button
                         type="submit" 
                         className="save__button"
+                        disabled={this.validateName() || this.validateContent() || this.validateFolder()}
+                        //onClick={(e)=> this.update}
                     >
                         Save Note
                     </button>
@@ -200,16 +230,16 @@ class NewNote extends React.Component {
     }
 }
 
-NewNote.propTypes = {
+AddNote.propTypes = {
     state: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string,
-        name: PropTypes.string,
-        modified: PropTypes.Date,
-        folderId: PropTypes.string,
-        content: PropTypes.string,
+        id: {value: PropTypes.string},
+        name: {value: PropTypes.string.isRequired},
+        modified: {value: PropTypes.Date},
+        folderId: {value: PropTypes.string.isRequired},
+        content: {value: PropTypes.string.isRequired},
+        folderName: {value: PropTypes.string}
     }))
 };
 
+export default withRouter(AddNote);
 
-
-export default withRouter(NewNote);
