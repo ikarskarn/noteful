@@ -3,7 +3,7 @@ import './AddFolder.css';
 import NotefulContext from '../NotefulContext';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import ValidationError from '../ValidationError';
+import ValidationError from '../ValidationError'; 
 
 class AddFolder extends React.Component {
     constructor(props) {
@@ -20,7 +20,7 @@ class AddFolder extends React.Component {
             touched: false,
         }
     }
-    
+    //#region updates
     updateNameState(name) {
         this.setState({
             name: {value: name, touched: true},
@@ -31,7 +31,9 @@ class AddFolder extends React.Component {
             id: {value: id},
         })
     }
+    //#endregion
 
+    //#region handlers
     handleSubmit = (e) => {
         e.preventDefault();
         const id = this.state.id.value;
@@ -64,13 +66,16 @@ class AddFolder extends React.Component {
             console.error(error);
         })
     }
+
     handleFormDisplay(value) {
         this.context.updateNewFolderState(value);
         this.context.handleRenderForm();
     }
+    
     generateId = () => {
         return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     }
+    
     validateName() {
         const name = this.state.name.value.trim();
         if(name.length === 0) {
@@ -79,6 +84,8 @@ class AddFolder extends React.Component {
             return 'Name should be between 3 and 15 characters';
         }
     }
+    //#endregion
+
     render() {
         return(
             <form className="new-folder" onSubmit={(e)=>this.handleSubmit(e)}>

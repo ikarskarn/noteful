@@ -77,6 +77,7 @@ class NotefulApp extends React.Component {
             })
         },
     };
+    
     componentDidMount() {
         fetch('http://localhost:9090/folders')
         .then(response => {
@@ -110,6 +111,7 @@ class NotefulApp extends React.Component {
             console.error(error);
         })
     }
+    
     render() {
         return (
             <NotefulContext.Provider value={this.state}>

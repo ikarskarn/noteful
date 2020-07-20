@@ -3,7 +3,7 @@ import './AddNote.css';
 import NotefulContext from '../NotefulContext';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import ValidationError from '../ValidationError';
+import ValidationError from '../ValidationError'; 
 
 class AddNote extends React.Component {
     constructor(props) {
@@ -36,6 +36,8 @@ class AddNote extends React.Component {
             value: '',
         },
     }
+    
+    //#region handlers
     generateState() {
         console.log("Name: ", this.state.name.value);
         console.log("Content: ", this.state.content.value);
@@ -45,6 +47,7 @@ class AddNote extends React.Component {
         const modified = new Date();
         this.updateModifiedState(modified);
     }
+    
     handleSubmit = (e) => {
         e.preventDefault();
         this.generateState();
@@ -85,6 +88,13 @@ class AddNote extends React.Component {
             console.error(error);
         })
     }
+    handleFormDisplay(value) {
+        this.context.updateNewNoteState(value);
+        this.context.handleRenderForm();
+        //this.props.history.push('/');
+    }
+    //#endregion
+    
     //#region Update States
     updateIdState(id) {
         this.setState({
@@ -119,11 +129,7 @@ class AddNote extends React.Component {
     }
     //#endregion
     
-    handleFormDisplay(value) {
-        this.context.updateNewNoteState(value);
-        this.context.handleRenderForm();
-        //this.props.history.push('/');
-    }
+    //#region validators
     validateName() {
         const name = this.state.name.value.trim();
         if(name.length === 0) {
@@ -146,6 +152,7 @@ class AddNote extends React.Component {
             return 'Folder is required';
         }
     }
+    //#endregion
     
     render() {
         const folderOptions = this.context.folders.map((folder, i) => {
@@ -170,9 +177,17 @@ class AddNote extends React.Component {
                         className="new-note__control note-name"
                         name="name" 
                         id="name"
+                        aria-label="Name of your Note"
+                        aria-required="true"
+                        aria-describedby="name-constraint"
+                        aria-invalid="true"
                         ref={this.nameInput}
                         onChange={e=>this.updateNameState(e.target.value)}
                     />
+                    <div id="name-constraint">Enter Name</div>
+                    <div className="errorMessage" id="name-error">
+                        Name must be between 3 and 20 characters
+                    </div>
                     {this.state.name.touched && (
                         <ValidationError message={this.validateName()}/>
                     )}
@@ -184,9 +199,17 @@ class AddNote extends React.Component {
                         className="new-note__control note-content"
                         name="content" 
                         id="content"
+                        aria-label="Content of your Note"
+                        aria-required="true"
+                        aria-describedby="content-contraint"
+                        aria-invalid="true"
                         ref={this.contentInput}
                         onChange={e=>this.updateContentState(e.target.value)}
                     />
+                    <div id="content-constraint">Enter Content for Note</div>
+                    <div className="errorMessage" id="content-error">
+                        Name must be between 3 and 20 characters
+                    </div>
                     {this.state.name.touched && (
                         <ValidationError message={this.validateContent()}/>
                     )}
@@ -197,6 +220,10 @@ class AddNote extends React.Component {
                         className="new-note__control note-folder"
                         name="folderId" 
                         id="folderId"
+                        aria-label="Folder for note"
+                        aria-required="true"
+                        aria-describedby="folder-constraint"
+                        aria-invalid="true"
                         ref={this.folderInput}
                         defaultValue={'default'}
                         onChange={e=>this.updateFolderState(e)}
@@ -204,6 +231,10 @@ class AddNote extends React.Component {
                         <option value="default" disabled>Choose a Folder</option>
                         {folderOptions}
                     </select>
+                    <div id="folder-constraint">Choose a Folder</div>
+                    <div className="errorMessage" id="folder-error">
+                        A Folder is Required
+                    </div>
                     {this.state.folderId.touched && (
                         <ValidationError message={this.validateFolder()}/>
                     )}

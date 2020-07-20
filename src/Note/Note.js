@@ -4,7 +4,7 @@ import FolderList from '../FolderList/FolderList';
 import NoteList from '../NoteList/NoteList';
 import { Link } from 'react-router-dom';
 import NotefulContext from '../NotefulContext';
-import ListError from '../ListError';
+import ListError from '../ListError'; 
 
 class Note extends React.Component {
     static contextType = NotefulContext;

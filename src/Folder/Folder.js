@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'; 
 import './Folder.css';
 import FolderList from '../FolderList/FolderList';
 import NoteList from '../NoteList/NoteList';
