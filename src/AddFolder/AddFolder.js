@@ -39,7 +39,7 @@ class AddFolder extends React.Component {
         const id = this.state.id.value;
         const name = this.nameInput.current.value;
         const folder = { id, name};
-        const url='http://localhost:9090/folders'
+        const url='http://localhost:8000/api/folders'
         const options = {
             method: 'POST',
             body: JSON.stringify(folder),

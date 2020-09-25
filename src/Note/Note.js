@@ -8,8 +8,8 @@ import ListError from '../ListError';
 
 class Note extends React.Component {
     static contextType = NotefulContext;
-    deleteNoteRequest(noteId, callback) {
-        fetch(`http://localhost:9090/notes/${noteId}`, {
+    deleteNoteRequest(noteId) {
+        fetch(`http://localhost:8000/api/notes/${noteId}`, {
             method: 'DELETE',
             headers: {
                 'content-type': 'application/json'
@@ -32,7 +32,7 @@ class Note extends React.Component {
     }
     render() {
         const folders = this.context.folders
-        .filter(folder => folder.id === this.context.folderid)
+        .filter(folder => folder.id === this.context.folder_id)
         .map((folder) => {
             return (
                 <div className='note-folder' key={folder.id}>
@@ -41,7 +41,7 @@ class Note extends React.Component {
                         id={folder.id}
                         value={folder.id}
                         onClick={(e) => this.context.updateFolderState(e.target.id)}
-                        to={'/folder'}
+                        to={'/api/folders'}
                     >
                         Go Back
                     </Link>
@@ -53,18 +53,18 @@ class Note extends React.Component {
         });
             
         const notes = this.context.notes
-        .filter(note => note.id === this.context.noteid)
+        .filter(note => note.id === parseInt(this.context.noteid))
         .map((note) => {
             return (
                 <div className='note-content' key={note.id}>
                     <div 
                         className='note'
-                        folderid={note.folderId}
+                        folder_id={note.folder_id}
                         id={note.id}
                     >
-                        <h2>{note.name}</h2>
+                        <h2>{note.note_name}</h2>
                         <div className='modify-group'>
-                            <p>{note.modified}</p>
+                            <p>{note.date_modified}</p>
                             <Link
                                 id={note.id}
                                 onClick={(e)=>this.deleteNoteRequest(e.target.id, this.context.deleteNote(note.id))} 
@@ -74,7 +74,7 @@ class Note extends React.Component {
                             </Link>
                         </div>
                     </div>
-                    <p>{note.content}</p>
+                    <p>{`Hello There ${note.content}`}</p>
                 </div>
             )
         }) 

@@ -17,7 +17,7 @@ class Main extends React.Component {
                     key={folder.id}
                     id={folder.id}
                     onClick={(e) => this.context.updateFolderState(e.target.id)}
-                    to={`/folder`}
+                    to={`/api/folders/${folder.id}`}
                 >
                     {folder.name}
                 </Link>
@@ -29,17 +29,17 @@ class Main extends React.Component {
                 <Link
                     key={note.id}
                     className='note'
-                    folderid={note.folderId}
+                    folder_id={note.folder_id}
                     id={note.id}
                     onClick={(e) => {
-                        this.context.updateFolderState(note.folderId);
+                        this.context.updateFolderState(note.folder_id);
                         this.context.updateNoteState(e.target.id)
                     }}
-                    modified={note.modified}
+                    date_modified={note.date_modified}
                     content={note.content}
-                    to={'/note'}
+                    to={`/api/notes/${note.id}`}
                 >
-                    {note.name}
+                    {note.note_name}
                 </Link>
             )
         }) 

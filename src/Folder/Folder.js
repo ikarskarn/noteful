@@ -20,39 +20,35 @@ class Folder extends React.Component {
         .map((folder) => {
             return (
                 <Link
-                    className={`folder ${this.isSelected(this.context.isSelected(folder.id))}`} 
+                    className={`folder`} 
                     key={folder.id}
                     id={folder.id}
                     value={folder.id}
                     onClick={(e) => this.context.updateFolderState(e.target.id)}
-                    to={`/folder`}
+                    to={`/api/folders/${folder.id}`}
                 >
                     {folder.name}
                 </Link>
             )
         });
         const notes = this.context.notes
-            .filter(note => {
-                return(
-                    note.folderId === this.context.folderid
-                );
-            })
+            .filter(note => note.folder_id === parseInt(this.context.folder_id))
             .map((note) => {
             return(
                 <Link
                     key={note.id}
                     className='note'
-                    folderid={note.folderId}
+                    folder_id={note.folder_id}
                     id={note.id}
                     onClick={(e) => this.context.updateNoteState(e.target.id)}
-                    modified={note.modified}
+                    date_modified={note.date_modified}
                     content={note.content}
-                    to={'/note'}
+                    to={`/api/notes/${note.id}`}
                 >
-                    {note.name}
+                    {note.note_name}
                 </Link>
             )
-        }) 
+        })
         return (
             <div className="folder-route">
                 <ListError>
@@ -71,7 +67,7 @@ class Folder extends React.Component {
                     <div className="note-list">
                         { this.context.handleRenderForm() || 
                         <>
-                            <NoteList notes={notes} />
+                            <NoteList notes ={notes} />
                             <button
                                 type="button"
                                 className="note__button"

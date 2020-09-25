@@ -12,20 +12,21 @@ import PropTypes from 'prop-types';
 
 class NotefulApp extends React.Component {
     state = {
-        folderid: '',
+        folder_id: '',
         noteid: '',
         folders: [],
         notes: [],
         renderFolderForm: false,
         renderNoteForm: false,
         updateFolderState: (id) => {
-            console.log("Update folder ID ran: ", id)
+            console.log(parseInt(id))
             this.setState({
-                folderid: id,
+                folder_id: id,
             });
         },
         updateNoteState: (id) => {
             console.log("update note ID ran: ", id)
+            console.log("note content: ", this.state.notes)
             this.setState({
                 noteid: id,
             });
@@ -41,7 +42,7 @@ class NotefulApp extends React.Component {
             })
         },
         isSelected: (id) => {
-            if(id === this.state.folderid && this.state.folderid !== '') {
+            if(id === this.state.folder_id && this.state.folder_id !== '') {
                 return true;
             } else {
                 return false;
@@ -69,17 +70,23 @@ class NotefulApp extends React.Component {
             this.state.handleRenderForm();
         },
         addFolder: (folder) => {
-            console.log("add Folder ID: ", folder.id);
+            //console.log("add Folder ID: ", folder.id);
             this.setState({
                 folders: [...this.state.folders, folder],
                 renderFolderForm: false,
-                folderId: folder.id,
+                folder_id: folder.id, //folderId
             })
         },
     };
     
     componentDidMount() {
-        fetch('http://localhost:9090/folders')
+        fetch('http://localhost:8000/api/folders')
+//        fetch(`http://localhost:8000/api/folders`, {
+//            method: 'GET',
+//            headers: {
+//                'content-type': 'application/json'
+//            },
+//        })
         .then(response => {
             if(!response.ok) {
                 return response.json().then(error =>{
@@ -94,8 +101,13 @@ class NotefulApp extends React.Component {
         .catch(error => {
             console.error(error);
         });
-
-        fetch('http://localhost:9090/notes')
+        fetch('http://localhost:8000/api/notes')
+//          fetch(`http://localhost:8000/api/notes`, {
+//              method: 'GET',
+//              headers: {
+//                  'content-type': 'application/json'
+//              },
+//        })
         .then(response => {
             if(!response.ok) {
                 return response.json().then(error => {
@@ -108,7 +120,7 @@ class NotefulApp extends React.Component {
             this.setState({ notes })
         })
         .catch(error => {
-            console.error(error);
+            console.error('ERROR!!!!', error);
         })
     }
     
@@ -119,8 +131,8 @@ class NotefulApp extends React.Component {
                     <Header />            
                     <main className='main-app'>
                         <Route exact path='/' component={Main}/>
-                        <Route path='/folder' component={Folder}/>
-                        <Route path='/note' component={Note}/>
+                        <Route path='/api/folders' component={Folder}/>
+                        <Route path='/api/notes' component={Note}/>
                     </main>
                 </div>
             </NotefulContext.Provider>
@@ -130,7 +142,7 @@ class NotefulApp extends React.Component {
 
 NotefulApp.propTypes = {
     state: PropTypes.arrayOf(PropTypes.shape({
-        folderid: PropTypes.string,
+        folder_id: PropTypes.number,
         noteid: PropTypes.string,
         folders: PropTypes.arrayOf(PropTypes.object),
         notes: PropTypes.arrayOf(PropTypes.object),

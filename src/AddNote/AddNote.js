@@ -17,48 +17,48 @@ class AddNote extends React.Component {
         id: {
             value: '',
         },
-        name: {
+        note_name: {
             value: '',
             touched: false,
         },
-        modified: {
+        date_modified: {
             value: new Date(),
         },
-        folderId: {
-            value: '',
+        folder_id: {
+            value: '1',
             touched: false,
         },
         content: {
             value: '',
             touched: false,
         },
-        folderName: {
+        folder_name: {
             value: '',
         },
     }
     
     //#region handlers
     generateState() {
-        console.log("Name: ", this.state.name.value);
+        console.log("Name: ", this.state.note_name.value);
         console.log("Content: ", this.state.content.value);
-        console.log("Folder: ", this.state.folderId.value);
-        const id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        this.updateIdState(id);
-        const modified = new Date();
-        this.updateModifiedState(modified);
+        console.log("Folder: ", this.state.folder_id.value);
+        //const id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        //this.updateIdState(id);
+        //const modified = new Date();
+        //this.updateModifiedState(modified);
     }
     
     handleSubmit = (e) => {
         e.preventDefault();
-        this.generateState();
-        const id = this.state.id.value;
+        //this.generateState();
+        //const id = this.state.id.value;
         const name = this.nameInput.current.value;
-        const modified = this.state.modified.value;
-        const folderId = this.state.folderId.value;
+        //const modified = this.state.date_modified.value;
+        const folderid = this.state.folder_id.value;
         const content = this.contentInput.current.value;
 
-        const note = { id, name, modified, folderId, content };
-        const url='http://localhost:9090/notes'
+        const note = { name, folderid, content };
+        const url='http://localhost:8000/api/notes'
         const options = {
             method: 'POST',
             body: JSON.stringify(note),
@@ -75,10 +75,10 @@ class AddNote extends React.Component {
         })
         .then(data=> {
             this.setState({
-                id: { value: '' },
-                name: { value: '', touched: false }, 
-                modified: { value: '' },
-                folderId: { value: '', touched: false },
+                //id: { value: '' },
+                note_name: { value: '', touched: false }, 
+                //date_modified: { value: '' },
+                folder_id: { value: '', touched: false },
                 content: { value: '', touched: false },
             });
             this.context.addNote(data);
@@ -103,23 +103,23 @@ class AddNote extends React.Component {
     }
     updateNameState(name) {
         this.setState({
-            name: { value: name, touched: true },
+            note_name: { value: name, touched: true },
         })
     }
     updateModifiedState(modified) {
         this.setState({
-            modified: { value: modified },
+            date_modified: { value: modified },
         })
     }
     updateFolderState(e) {
         const index = e.target.selectedIndex;
         const optionElement = e.target.childNodes[index];
-        const folderid =  optionElement.getAttribute('folderid');
-        const folderName = optionElement.getAttribute('value');
+        const folder_id =  optionElement.getAttribute('folder_id');
+        const folder_name = optionElement.getAttribute('value');
                  
         this.setState({
-            folderId: { value: folderid, touched: true },
-            folderName: { value: folderName },
+            folder_id: { value: folder_id, touched: true },
+            folder_name: { value: folder_name },
         })
     }
     updateContentState(content) {
@@ -131,7 +131,7 @@ class AddNote extends React.Component {
     
     //#region validators
     validateName() {
-        const name = this.state.name.value.trim();
+        const name = this.state.note_name.value.trim();
         if(name.length === 0) {
             return 'Name is required';
         } else if (name.length < 3 || name.length > 20) {
@@ -147,7 +147,7 @@ class AddNote extends React.Component {
         }
     }
     validateFolder() {
-        const folderName = this.state.folderName.value.trim();
+        const folderName = this.state.folder_name.value.trim();
         if(folderName.length === 0) {
             return 'Folder is required';
         }
@@ -159,7 +159,7 @@ class AddNote extends React.Component {
             return(
                 <option 
                     key={folder.id}
-                    folderid={folder.id}
+                    id={folder.id}
                     value={folder.name}
                 >
                     {folder.name}
@@ -188,7 +188,7 @@ class AddNote extends React.Component {
                     <div className="errorMessage" id="name-error">
                         Name must be between 3 and 20 characters
                     </div>
-                    {this.state.name.touched && (
+                    {this.state.note_name.touched && (
                         <ValidationError message={this.validateName()}/>
                     )}
                 </div>
@@ -210,7 +210,7 @@ class AddNote extends React.Component {
                     <div className="errorMessage" id="content-error">
                         Name must be between 3 and 20 characters
                     </div>
-                    {this.state.name.touched && (
+                    {this.state.content.touched && (
                         <ValidationError message={this.validateContent()}/>
                     )}
                 </div>
@@ -235,7 +235,7 @@ class AddNote extends React.Component {
                     <div className="errorMessage" id="folder-error">
                         A Folder is Required
                     </div>
-                    {this.state.folderId.touched && (
+                    {this.state.folder_id.touched && (
                         <ValidationError message={this.validateFolder()}/>
                     )}
                 </div>
@@ -264,13 +264,12 @@ class AddNote extends React.Component {
 AddNote.propTypes = {
     state: PropTypes.arrayOf(PropTypes.shape({
         id: {value: PropTypes.string},
-        name: {value: PropTypes.string.isRequired},
-        modified: {value: PropTypes.Date},
-        folderId: {value: PropTypes.string.isRequired},
+        note_name: {value: PropTypes.string.isRequired},
+        date_modified: {value: PropTypes.Date},
+        folder_id: {value: PropTypes.string.isRequired},
         content: {value: PropTypes.string.isRequired},
-        folderName: {value: PropTypes.string}
+        folder_name: {value: PropTypes.string}
     }))
 };
 
 export default withRouter(AddNote);
-
