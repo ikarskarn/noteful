@@ -80,13 +80,13 @@ class NotefulApp extends React.Component {
     };
     
     componentDidMount() {
-        fetch('http://localhost:8000/api/folders')
-//        fetch(`http://localhost:8000/api/folders`, {
-//            method: 'GET',
-//            headers: {
-//                'content-type': 'application/json'
-//            },
-//        })
+        fetch(config.API_ENDPOINT, {
+			method: 'GET',
+			headers: {
+				'content-type': 'application/json',
+				'Authorization': `Bearer ${config.API_KEY}`
+			}
+		})
         .then(response => {
             if(!response.ok) {
                 return response.json().then(error =>{
