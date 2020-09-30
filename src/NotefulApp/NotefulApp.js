@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import './NotefulApp.css';
+import '../App.css';
 import NotefulContext from '../NotefulContext';
 import Main from '../Main/Main';
 import Folder from '../Folder/Folder';
@@ -9,6 +10,7 @@ import Header from '../Header.js';
 import AddFolder from '../AddFolder/AddFolder';
 import AddNote from '../AddNote/AddNote';
 import PropTypes from 'prop-types';
+import config from '../config.js';
 
 class NotefulApp extends React.Component {
     state = {
@@ -21,7 +23,7 @@ class NotefulApp extends React.Component {
         updateFolderState: (id) => {
             console.log(parseInt(id))
             this.setState({
-                folder_id: id,
+                folder_id: parseInt(id),
             });
         },
         updateNoteState: (id) => {
@@ -42,7 +44,7 @@ class NotefulApp extends React.Component {
             })
         },
         isSelected: (id) => {
-            if(id === this.state.folder_id && this.state.folder_id !== '') {
+            if(id === parseInt(this.state.folder_id) && this.state.folder_id !== '') {
                 return true;
             } else {
                 return false;
@@ -80,11 +82,10 @@ class NotefulApp extends React.Component {
     };
     
     componentDidMount() {
-        fetch(config.API_ENDPOINT, {
+        fetch(`${config.API_ENDPOINT}/api/folders`, {
 			method: 'GET',
 			headers: {
-				'content-type': 'application/json',
-				'Authorization': `Bearer ${config.API_KEY}`
+				'content-type': 'application/json'
 			}
 		})
         .then(response => {
@@ -101,13 +102,13 @@ class NotefulApp extends React.Component {
         .catch(error => {
             console.error(error);
         });
-        fetch('http://localhost:8000/api/notes')
-//          fetch(`http://localhost:8000/api/notes`, {
-//              method: 'GET',
-//              headers: {
-//                  'content-type': 'application/json'
-//              },
-//        })
+        
+        fetch(`${config.API_ENDPOINT}/api/notes`, {
+              method: 'GET',
+              headers: {
+                  'content-type': 'application/json'
+              },
+        })
         .then(response => {
             if(!response.ok) {
                 return response.json().then(error => {
@@ -143,7 +144,7 @@ class NotefulApp extends React.Component {
 NotefulApp.propTypes = {
     state: PropTypes.arrayOf(PropTypes.shape({
         folder_id: PropTypes.number,
-        noteid: PropTypes.string,
+        noteid: PropTypes.number,
         folders: PropTypes.arrayOf(PropTypes.object),
         notes: PropTypes.arrayOf(PropTypes.object),
         renderFolderForm: PropTypes.bool,

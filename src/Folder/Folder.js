@@ -38,7 +38,7 @@ class Folder extends React.Component {
                 <Link
                     key={note.id}
                     className='note'
-                    folder_id={note.folder_id}
+                    folder_id={parseInt(note.folder_id)}
                     id={note.id}
                     onClick={(e) => this.context.updateNoteState(e.target.id)}
                     date_modified={note.date_modified}

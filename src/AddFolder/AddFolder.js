@@ -4,6 +4,7 @@ import NotefulContext from '../NotefulContext';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import ValidationError from '../ValidationError'; 
+import config from '../config';
 
 class AddFolder extends React.Component {
     constructor(props) {
@@ -39,7 +40,7 @@ class AddFolder extends React.Component {
         const id = this.state.id.value;
         const name = this.nameInput.current.value;
         const folder = { id, name};
-        const url='http://localhost:8000/api/folders'
+        const url=`${config.API_ENDPOINT}/api/folders`
         const options = {
             method: 'POST',
             body: JSON.stringify(folder),

@@ -4,6 +4,7 @@ import NotefulContext from '../NotefulContext';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import ValidationError from '../ValidationError'; 
+import config from '../config';
 
 class AddNote extends React.Component {
     constructor(props) {
@@ -25,7 +26,7 @@ class AddNote extends React.Component {
             value: new Date(),
         },
         folder_id: {
-            value: '1',
+            value: '',
             touched: false,
         },
         content: {
@@ -38,27 +39,16 @@ class AddNote extends React.Component {
     }
     
     //#region handlers
-    generateState() {
-        console.log("Name: ", this.state.note_name.value);
-        console.log("Content: ", this.state.content.value);
-        console.log("Folder: ", this.state.folder_id.value);
-        //const id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        //this.updateIdState(id);
-        //const modified = new Date();
-        //this.updateModifiedState(modified);
-    }
-    
     handleSubmit = (e) => {
         e.preventDefault();
-        //this.generateState();
         //const id = this.state.id.value;
-        const name = this.nameInput.current.value;
-        //const modified = this.state.date_modified.value;
-        const folderid = this.state.folder_id.value;
+        const note_name = this.nameInput.current.value;
+        //const date_modified = this.state.date_modified.value;
+        const folder_id = parseInt(this.state.folder_id.value);
         const content = this.contentInput.current.value;
 
-        const note = { name, folderid, content };
-        const url='http://localhost:8000/api/notes'
+        const note = { note_name, folder_id, content };
+        const url=`${config.API_ENDPOINT}/api/notes`
         const options = {
             method: 'POST',
             body: JSON.stringify(note),
@@ -78,7 +68,7 @@ class AddNote extends React.Component {
                 //id: { value: '' },
                 note_name: { value: '', touched: false }, 
                 //date_modified: { value: '' },
-                folder_id: { value: '', touched: false },
+                folder_id: { value: 0, touched: false },
                 content: { value: '', touched: false },
             });
             this.context.addNote(data);
@@ -114,11 +104,11 @@ class AddNote extends React.Component {
     updateFolderState(e) {
         const index = e.target.selectedIndex;
         const optionElement = e.target.childNodes[index];
-        const folder_id =  optionElement.getAttribute('folder_id');
+        const folder_id =  optionElement.getAttribute('id');
         const folder_name = optionElement.getAttribute('value');
                  
         this.setState({
-            folder_id: { value: folder_id, touched: true },
+            folder_id: { value: parseInt(folder_id), touched: true },
             folder_name: { value: folder_name },
         })
     }
@@ -263,10 +253,10 @@ class AddNote extends React.Component {
 
 AddNote.propTypes = {
     state: PropTypes.arrayOf(PropTypes.shape({
-        id: {value: PropTypes.string},
+        id: {value: PropTypes.number},
         note_name: {value: PropTypes.string.isRequired},
         date_modified: {value: PropTypes.Date},
-        folder_id: {value: PropTypes.string.isRequired},
+        folder_id: {value: PropTypes.number.isRequired},
         content: {value: PropTypes.string.isRequired},
         folder_name: {value: PropTypes.string}
     }))
