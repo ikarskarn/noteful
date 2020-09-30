@@ -8,16 +8,14 @@
 
 .form-group, .button-group, h2 {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    padding: 3px;
-    margin: 5px;
+    padding: 5px;
+    margin: 30px 15px;
 }
 
 .form-group {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
+    margin-bottom: 50px;
 }
 
 label {
@@ -25,28 +23,30 @@ label {
     text-align: center;
 }
 
-.new-note__control {
-    height: 30px;
-    border-radius: 6px;
-}
-
 .note-content-container {
     height: 300px;
 }
-.note-content {
-    width: 75%;
-    height: 500px;
-    text-align: left;
-    vertical-align: top;
+
+.note-name {
+    height: 30px;
+    line-height: 30px;
+    border-radius: 6px;
+}
+
+textarea {
+    height: 50px;
 }
 
 .note-folder {
-    height: 50px;
+    height: 30px;
     width: 200px;
     font-size: 18px;
 }
-.error {
+
+.errorMessage {
     color: red;
+    padding: 10px;
+    margin: 10px;
 }
 
 .button-group {
